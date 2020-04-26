@@ -12,7 +12,7 @@ class Patient(models.Model):
     name = models.CharField(
         max_length=60,
         db_index=True)
-    gender = models.IntegerField(choices=Gender.choices)
+    gender = models.SmallIntegerField(choices=Gender.choices)
     birthdate = models.DateField(blank=False)
     address = models.CharField(max_length=600, blank=True)
     past_history = models.TextField(blank=True)
@@ -24,12 +24,11 @@ class Visit(models.Model):
     weight = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        validators=[MinValueValidator(0), ])
-    days = models.IntegerField(
-        validators=[MinValueValidator(0), ])
+        validators=[MinValueValidator(0), ],
+        default=0)
+    days = models.PositiveSmallIntegerField()
     followup_note = models.TextField(blank=True)
-    bill = models.IntegerField(
-        validators=[MinValueValidator(0), ])
+    bill = models.PositiveIntegerField()
     patient = models.ForeignKey(
         Patient,
         on_delete=models.CASCADE)
@@ -38,22 +37,16 @@ class Visit(models.Model):
 class DrugWarehouse(models.Model):
     name = models.CharField(
         max_length=20, db_index=True)
-    init_quantity = models.IntegerField(
-        validators=[MinValueValidator(0), ],
-        default=0)
-    curr_quantity = models.IntegerField(
-        validators=[MinValueValidator(0), ],
-        default=0)
+    init_quantity = models.PositiveIntegerField(default=0)
+    curr_quantity = models.PositiveIntegerField(default=0)
     usage_unit = models.CharField(
         max_length=10,
         default='viên')
     sale_unit = models.CharField(
         max_length=10,
         default='viên')
-    purchase_price = models.IntegerField(
-        validators=[MinValueValidator(0), ])
-    sale_price = models.IntegerField(
-        validators=[MinValueValidator(0), ])
+    purchase_price = models.PositiveIntegerField()
+    sale_price = models.PositiveIntegerField()
     intake_method = models.CharField(
         max_length=50,
         default='uống')
@@ -67,10 +60,8 @@ class LineDrug(models.Model):
         max_digits=3,
         decimal_places=1,
         validators=[RegexValidator(r"^\d+[./]?\d?$"), ])
-    times_per_day = models.IntegerField(
-        validators=[MinValueValidator(0), ])
-    quantity = models.IntegerField(
-        validators=[MinValueValidator(0), ])
+    times_per_day = models.PositiveSmallIntegerField()
+    quantity = models.PositiveSmallIntegerField()
     usage = models.CharField(max_length=20)
     visit = models.ForeignKey(
         Visit,
@@ -78,6 +69,8 @@ class LineDrug(models.Model):
 
 
 class VisitQueue(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE)
     time_added = models.DateTimeField(auto_now_add=True)
     is_seen = models.BooleanField(default=False)
