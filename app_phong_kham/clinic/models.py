@@ -19,7 +19,7 @@ class Patient(models.Model):
 
 
 class Visit(models.Model):
-    exam_date = models.DateTimeField(auto_now=True)
+    exam_datetime = models.DateTimeField(auto_now=True)
     diagnosis = models.CharField(max_length=100)
     weight = models.DecimalField(
         max_digits=5,
@@ -75,3 +75,9 @@ class LineDrug(models.Model):
     visit = models.ForeignKey(
         Visit,
         on_delete=models.CASCADE)
+
+
+class VisitQueue(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    time_added = models.DateTimeField(auto_now_add=True)
+    is_seen = models.BooleanField(default=False)
