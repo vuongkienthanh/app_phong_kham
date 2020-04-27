@@ -131,3 +131,7 @@ dmypy.json
 
 # macos
 default.profraw
+
+# sublime
+*.sublime-project
+*.sublime-workspace
